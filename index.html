@@ -26,7 +26,7 @@
     </style>
 </head>
 <body>
-    <h1>Може то на програміста піти ? диви шо сделав</h1>
+    <h1>Гра Змійка</h1>
     <canvas id="gameCanvas" width="400" height="400"></canvas>
     <script>
         const canvas = document.getElementById("gameCanvas");
@@ -41,6 +41,9 @@
             y: Math.floor(Math.random() * canvasSize / box) * box
         };
         let score = 0;
+        let frameCount = 0;
+        const fps = 120;
+        const frameInterval = 1000 / fps;
 
         document.addEventListener("keydown", changeDirection);
 
@@ -101,7 +104,8 @@
                 snakeY >= canvasSize ||
                 collision(newHead, snake)
             ) {
-                clearInterval(game);
+                cancelAnimationFrame(game);
+                return;
             }
 
             snake.unshift(newHead);
@@ -111,7 +115,20 @@
             ctx.fillText(score, 2 * box, 1.6 * box);
         }
 
-        let game = setInterval(draw, 100);
+        function gameLoop(timestamp) {
+            if (!lastTime) lastTime = timestamp;
+            const elapsed = timestamp - lastTime;
+
+            if (elapsed > frameInterval) {
+                lastTime = timestamp - (elapsed % frameInterval);
+                draw();
+            }
+
+            game = requestAnimationFrame(gameLoop);
+        }
+
+        let lastTime = 0;
+        let game = requestAnimationFrame(gameLoop);
     </script>
 </body>
 </html>
