@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const resetGame = () => {
-        boardState.fill(null);
+        boardState = Array(9).fill(null);
         cells.forEach(cell => {
             cell.textContent = '';
             cell.classList.remove('disabled');
