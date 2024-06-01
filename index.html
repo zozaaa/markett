@@ -41,9 +41,9 @@
             y: Math.floor(Math.random() * canvasSize / box) * box
         };
         let score = 0;
-        let frameCount = 0;
         const fps = 120;
-        const frameInterval = 1000 / fps;
+        const moveInterval = 1000 / 10; // 10 moves per second (adjust this for speed)
+        let lastMoveTime = 0;
 
         document.addEventListener("keydown", changeDirection);
 
@@ -77,6 +77,12 @@
             ctx.fillStyle = "red";
             ctx.fillRect(food.x, food.y, box, box);
 
+            ctx.fillStyle = "black";
+            ctx.font = "45px Changa one";
+            ctx.fillText(score, 2 * box, 1.6 * box);
+        }
+
+        function update() {
             let snakeX = snake[0].x;
             let snakeY = snake[0].y;
 
@@ -109,19 +115,23 @@
             }
 
             snake.unshift(newHead);
-
-            ctx.fillStyle = "black";
-            ctx.font = "45px Changa one";
-            ctx.fillText(score, 2 * box, 1.6 * box);
         }
 
         function gameLoop(timestamp) {
             if (!lastTime) lastTime = timestamp;
             const elapsed = timestamp - lastTime;
 
-            if (elapsed > frameInterval) {
-                lastTime = timestamp - (elapsed % frameInterval);
+            if (elapsed > 1000 / fps) {
+                lastTime = timestamp - (elapsed % (1000 / fps));
                 draw();
+            }
+
+            if (!lastMoveTime) lastMoveTime = timestamp;
+            const moveElapsed = timestamp - lastMoveTime;
+
+            if (moveElapsed > moveInterval) {
+                lastMoveTime = timestamp - (moveElapsed % moveInterval);
+                update();
             }
 
             game = requestAnimationFrame(gameLoop);
