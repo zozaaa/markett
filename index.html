@@ -3,142 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Змійка</title>
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-        }
-
-        h1 {
-            margin-bottom: 20px;
-        }
-
-        canvas {
-            border: 1px solid #000;
-        }
-    </style>
+    <title>Хрестики-Нулики</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Гра Змійка</h1>
-    <canvas id="gameCanvas" width="400" height="400"></canvas>
-    <script>
-        const canvas = document.getElementById("gameCanvas");
-        const ctx = canvas.getContext("2d");
-
-        const box = 20; // Size of each snake segment
-        const canvasSize = 400; // Size of the canvas
-        let snake = [{ x: 9 * box, y: 10 * box }];
-        let direction = "RIGHT";
-        let food = {
-            x: Math.floor(Math.random() * canvasSize / box) * box,
-            y: Math.floor(Math.random() * canvasSize / box) * box
-        };
-        let score = 0;
-        const fps = 120;
-        const moveInterval = 1000 / 10; // 10 moves per second (adjust this for speed)
-        let lastMoveTime = 0;
-
-        document.addEventListener("keydown", changeDirection);
-
-        function changeDirection(event) {
-            if (event.key === "ArrowLeft" && direction !== "RIGHT") direction = "LEFT";
-            if (event.key === "ArrowUp" && direction !== "DOWN") direction = "UP";
-            if (event.key === "ArrowRight" && direction !== "LEFT") direction = "RIGHT";
-            if (event.key === "ArrowDown" && direction !== "UP") direction = "DOWN";
-        }
-
-        function collision(head, array) {
-            for (let i = 0; i < array.length; i++) {
-                if (head.x === array[i].x && head.y === array[i].y) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        function draw() {
-            ctx.fillStyle = "#f0f0f0";
-            ctx.fillRect(0, 0, canvasSize, canvasSize);
-
-            for (let i = 0; i < snake.length; i++) {
-                ctx.fillStyle = i === 0 ? "green" : "white";
-                ctx.fillRect(snake[i].x, snake[i].y, box, box);
-                ctx.strokeStyle = "red";
-                ctx.strokeRect(snake[i].x, snake[i].y, box, box);
-            }
-
-            ctx.fillStyle = "red";
-            ctx.fillRect(food.x, food.y, box, box);
-
-            ctx.fillStyle = "black";
-            ctx.font = "45px Changa one";
-            ctx.fillText(score, 2 * box, 1.6 * box);
-        }
-
-        function update() {
-            let snakeX = snake[0].x;
-            let snakeY = snake[0].y;
-
-            if (direction === "LEFT") snakeX -= box;
-            if (direction === "UP") snakeY -= box;
-            if (direction === "RIGHT") snakeX += box;
-            if (direction === "DOWN") snakeY += box;
-
-            if (snakeX === food.x && snakeY === food.y) {
-                score++;
-                food = {
-                    x: Math.floor(Math.random() * canvasSize / box) * box,
-                    y: Math.floor(Math.random() * canvasSize / box) * box
-                };
-            } else {
-                snake.pop();
-            }
-
-            let newHead = { x: snakeX, y: snakeY };
-
-            if (
-                snakeX < 0 ||
-                snakeX >= canvasSize ||
-                snakeY < 0 ||
-                snakeY >= canvasSize ||
-                collision(newHead, snake)
-            ) {
-                cancelAnimationFrame(game);
-                return;
-            }
-
-            snake.unshift(newHead);
-        }
-
-        function gameLoop(timestamp) {
-            if (!lastTime) lastTime = timestamp;
-            const elapsed = timestamp - lastTime;
-
-            if (elapsed > 1000 / fps) {
-                lastTime = timestamp - (elapsed % (1000 / fps));
-                draw();
-            }
-
-            if (!lastMoveTime) lastMoveTime = timestamp;
-            const moveElapsed = timestamp - lastMoveTime;
-
-            if (moveElapsed > moveInterval) {
-                lastMoveTime = timestamp - (moveElapsed % moveInterval);
-                update();
-            }
-
-            game = requestAnimationFrame(gameLoop);
-        }
-
-        let lastTime = 0;
-        let game = requestAnimationFrame(gameLoop);
-    </script>
+    <div id="game">
+        <h1>Хрестики-Нулики</h1>
+        <div id="board">
+            <div class="cell" data-index="0"></div>
+            <div class="cell" data-index="1"></div>
+            <div class="cell" data-index="2"></div>
+            <div class="cell" data-index="3"></div>
+            <div class="cell" data-index="4"></div>
+            <div class="cell" data-index="5"></div>
+            <div class="cell" data-index="6"></div>
+            <div class="cell" data-index="7"></div>
+            <div class="cell" data-index="8"></div>
+        </div>
+        <button id="reset">Почати заново</button>
+        <p id="message"></p>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
